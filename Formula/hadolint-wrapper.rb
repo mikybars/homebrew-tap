@@ -7,6 +7,12 @@ class HadolintWrapper < Formula
   sha256 "62ade57dea14d815ce87f99d65aaa19df7df1bd8d01c0d0b39e43c3b8c0167f0"
   license "MIT"
 
+  bottle do
+    root_url "https://github.com/mikybars/homebrew-tools/releases/download/hadolint-wrapper-1.2.1"
+    sha256 cellar: :any_skip_relocation, ventura:      "82756f5d2e34f3827e7a65a8d64905d708c770bc5ea436b3ebfb060a90caf214"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "457dbbf8ea4892ea1afec0948bc7f2dedf15d98da6d4986598d84687c3628d6d"
+  end
+
   depends_on "hadolint"
   depends_on "python"
 
