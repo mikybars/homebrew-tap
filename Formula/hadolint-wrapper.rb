@@ -20,6 +20,13 @@ class HadolintWrapper < Formula
   end
 
   test do
-    system "false"
+    resource("testdata") do
+      url "https://raw.githubusercontent.com/mikybars/hadolint-wrapper/f01c150e195d7b8e8af0fec794a997167c413f41/Dockerfile.example"
+      sha256 "495ade97a264e4194d3e933699291834a39dbe36a6cc067840a2ac6d2f04b7ad"
+    end
+
+    resource("testdata").stage do
+      assert_match "[x] DL3006:", shell_output("#{bin}/hadolintw Dockerfile.example --error DL3006", 1)
+    end
   end
 end
