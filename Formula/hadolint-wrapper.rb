@@ -9,8 +9,9 @@ class HadolintWrapper < Formula
 
   bottle do
     root_url "https://github.com/mikybars/homebrew-tools/releases/download/hadolint-wrapper-1.2.1"
-    sha256 cellar: :any_skip_relocation, ventura:      "82756f5d2e34f3827e7a65a8d64905d708c770bc5ea436b3ebfb060a90caf214"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "457dbbf8ea4892ea1afec0948bc7f2dedf15d98da6d4986598d84687c3628d6d"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "1ba13f6e6fa27894ade79ea4eb46b1c566b6edaa17a9057f255d2853ffba03c9"
+    sha256 cellar: :any_skip_relocation, ventura:       "82756f5d2e34f3827e7a65a8d64905d708c770bc5ea436b3ebfb060a90caf214"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "457dbbf8ea4892ea1afec0948bc7f2dedf15d98da6d4986598d84687c3628d6d"
   end
 
   depends_on "hadolint"
