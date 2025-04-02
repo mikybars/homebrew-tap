@@ -1,4 +1,4 @@
-# Quickstart guide to creating your own formulae
+# Quickstart guide to publishing your brew packages
 
 ## ⚒️ Required tools
 
