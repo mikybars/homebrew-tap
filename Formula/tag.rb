@@ -7,6 +7,11 @@ class Tag < Formula
 
   head "https://github.com/aykamko/tag.git", branch: "master"
 
+  bottle do
+    root_url "https://github.com/mikybars/homebrew-tap/releases/download/tag-1.4.0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma: "40c8cd866713479af552da4f3d36fc0f049d802cfc4b976b5b007500aa5099e4"
+  end
+
   depends_on "go" => :build
   depends_on "hg" => :build
   depends_on "the_silver_searcher" => :build
