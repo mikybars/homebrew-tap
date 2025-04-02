@@ -6,6 +6,11 @@ class Nnn < Formula
   license "BSD-2-Clause"
   head "https://github.com/jarun/nnn.git", branch: "master"
 
+  bottle do
+    root_url "https://github.com/mikybars/homebrew-tap/releases/download/nnn-5.1"
+    sha256 cellar: :any, arm64_sonoma: "e4017ce99d050fb64a14d83d82ef1609480cf8afb2bf873f2e96eb2c7fc32348"
+  end
+
   depends_on "gnu-sed"
   depends_on "ncurses"
   depends_on "readline"
