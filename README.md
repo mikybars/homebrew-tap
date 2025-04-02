@@ -42,17 +42,17 @@ Don't forget to remove all the generated comments and fill in the required field
 class HadolintWrapper < Formula
   include Language::Python::Virtualenv
 
-  desc "<DESC_HERE>"
-  homepage "<HOMEPAGE_HERE>"
+  desc "Dockerfile linter, validate inline bash, written in Haskell"
+  homepage "https://github.com/hadolint/hadolint"
   url "https://github.com/mikybars/hadolint-wrapper/releases/download/v1.2.1/hadolintw-1.2.1-brew.tar.gz"
-  sha256 "62ade57[...]167f0"
-  license "<LICENSE_HERE>"
+  sha256 "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda190b208a8b11d0f600b"
+  license "GPL"
 
   depends_on "python"
 
   resource "click" do
     url "https://files.pythonhosted.org/[...]/click-8.1.7.tar.gz"
-    sha256 "ca9853[...]ca6de"
+    sha256 "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda190b208a8b11d0f600b"
   end
 
   def install
@@ -68,16 +68,16 @@ end
 ## 5. Write some test(s) 🙏
 
 ```ruby
-  test do
-    resource("testdata") do
-      url "https://raw.githubusercontent.com/mikybars/[...]/Dockerfile.example"
-      sha256 "495ade[...]04b7ad"
-    end
-
-    resource("testdata").stage do
-      assert_match "[x] DL3006:", shell_output("#{bin}/hadolintw Dockerfile.example --error DL3006", 1)
-    end
+test do
+  resource("testdata") do
+    url "https://raw.githubusercontent.com/mikybars/[...]/Dockerfile.example"
+    sha256 "495ade[...]04b7ad"
   end
+
+  resource("testdata").stage do
+    assert_match "[x] DL3006:", shell_output("#{bin}/hadolintw Dockerfile.example --error DL3006", 1)
+  end
+end
 ```
 
 ## 6. Create a new branch and submit a PR with the new formula
@@ -145,17 +145,17 @@ If everything went well then there should be four things to check:
 
 4. A new commit was pushed to `main` updating the formula
 
-   ```bash
-   git show
-   ```
+```bash
+git show
+```
 
-   ```ruby
-   bottle do
-     root_url "https://github.com/mikybars/homebrew-tap/releases/download/hadolint-wrapper-1.2.1"
-     sha256 cellar: :any_skip_relocation, ventura:      "60c101[...]1bbcd"
-     sha256 cellar: :any_skip_relocation, x86_64_linux: "cafe49[...]b619a"
-   end
-   ```
+```ruby
+bottle do
+  root_url "https://github.com/mikybars/homebrew-tap/releases/download/hadolint-wrapper-1.2.1"
+  sha256 cellar: :any_skip_relocation, ventura:      "60c101[...]1bbcd"
+  sha256 cellar: :any_skip_relocation, x86_64_linux: "cafe49[...]b619a"
+end
+```
 
 ## 8. Build bottles for your own architecture (bonus 🌟)
 
@@ -170,10 +170,10 @@ The output from the above will be the path to the built bottle file and the bloc
 
 ```bash
 ./hadolint-wrapper--1.2.1.arm64_ventura.bottle.tar.gz
- bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "1771c2442f6c0cb052d7bb9f796263170698948b25869ff85749161296ce400a"
-  end
+bottle do
+   rebuild 1
+   sha256 cellar: :any_skip_relocation, arm64_ventura: "1771c2442f6c0cb052d7bb9f796263170698948b25869ff85749161296ce400a"
+end
 ```
 
 ```bash
