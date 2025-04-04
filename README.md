@@ -1,71 +1,50 @@
-# Quickstart guide to publishing your brew packages
+# Quickstart guide to publishing your own brew packages
 
-## ⚒️ Required tools
+These notes intend to be a notebook-style of guide and are inspired by [Homebrew tap with bottles uploaded to GitHub Releases
+](https://brew.sh/2020/11/18/homebrew-tap-with-bottles-uploaded-to-github-releases/)
+## Prerequisites
 
-- [Homebrew](https://brew.sh/)
 - Git
+- [Homebrew](https://brew.sh/)
 - [GitHub CLI](https://cli.github.com/)
 
-## 1. Create a tap
+## 1. Create a new tap (only once)
+
+Bootstrap the new tap locally:
 
 ```bash
 brew tap-new mikybars/tap
 ```
 
-## 2. Create a repo in GitHub
+Then share it on GitHub:
 
 ```bash
 cd $(brew --repository mikybars/tap)
 gh repo create homebrew-tap --source=. --public --push
 ```
 
-## 3. Create a formula in the tap
+## 2. Create a new formula in the tap
 
 ```bash
 brew create \
     --tap=mikybars/tap \
-    --python \
+    --cask \     # use for Casks instead of formulae (e.g. fonts)
+    --python \   # only for Python formulae
     --set-name hadolint-wrapper \
     https://github.com/mikybars/hadolint-wrapper/releases/download/v1.2.1/hadolintw-1.2.1-brew.tar.gz
 ```
 
-## 4. Edit the new formula
+## 3. Edit the new formula
 
 ```bash
-# not really necessary as the `create` command already opens the editor
+# not really necessary as the `create` command will already leave you in edit mode
 brew edit mikybars/tap/hadolint-wrapper
 ```
 
-Don't forget to remove all the generated comments and fill in the required fields:
+Don't forget to remove all the generated comments and fill in the required fields. Take a look at the already existing
+formulae in this repo for inspiration.
 
-```ruby
-class HadolintWrapper < Formula
-  include Language::Python::Virtualenv
-
-  desc "Dockerfile linter, validate inline bash, written in Haskell"
-  homepage "https://github.com/hadolint/hadolint"
-  url "https://github.com/mikybars/hadolint-wrapper/releases/download/v1.2.1/hadolintw-1.2.1-brew.tar.gz"
-  sha256 "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda190b208a8b11d0f600b"
-  license "GPL"
-
-  depends_on "python"
-
-  resource "click" do
-    url "https://files.pythonhosted.org/[...]/click-8.1.7.tar.gz"
-    sha256 "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda190b208a8b11d0f600b"
-  end
-
-  def install
-    virtualenv_install_with_resources
-  end
-
-  test do
-    system "true"
-  end
-end
-```
-
-## 5. Write some test(s) 🙏
+## 4. [Write some tests](https://docs.brew.sh/Formula-Cookbook#add-a-test-to-the-formula) 🙏
 
 ```ruby
 test do
@@ -80,17 +59,25 @@ test do
 end
 ```
 
+## 5. Validate your formula
+
+Run the same checks and validations as the CI/CD before pushing for a shorter feedback loop 😌
+
+```bash
+brew audit hadolint-wrapper --online --new
+```
+
 ## 6. Create a new branch and submit a PR with the new formula
 
 ```bash
 git switch --create hadolint-wrapper
 git add .
 git commit --message "hadolint-wrapper 1.2.1 (new formula)"
-git push
 gh pr create --fill
 ```
 
-A new workflow will then be triggered in GitHub that will build [bottles](https://docs.brew.sh/Bottles) for different OSs. Wait until all the jobs are finished:
+A new [workflow](https://github.com/mikybars/homebrew-tap/actions/workflows/tests.yml) will then be triggered in GitHub
+that will build [bottles](https://docs.brew.sh/Bottles) (Homebrew lingo for binary packages) for your [OSes](https://github.com/actions/runner-images/tree/main?tab=readme-ov-file#available-images). Wait until all the jobs are finished:
 
 ```bash
 gh run watch
@@ -98,20 +85,26 @@ gh run watch
 
 Watch for any errors and push as new commits as necessary to fix them (e.g. syntax errors, style issues, failing tests).
 
-## 7. Upload built bottles
+## 7. Publish the formula
 
-### 7.1 Grant write permissions to GitHub Actions
+> [!WARNING]
+> First check if the previous workflow yielded any bottles (some formulae like fonts do not need them) by running `gh run view` and looking for any ARTIFACTS section. It there aren't any then you can merge as usual and skip the rest of the section:
+>
+> ```bash
+> gh pr merge --squash --delete-branch
+> ```
 
-This next step involves writing some commits in the repository with the outcome of the previous workflows.
+> [!NOTE]
+> This next step involves writing some commits in the repository with the outcome of the previous workflows.
+>
+> Previously, GitHub Actions would get a `GITHUB_TOKEN` with both read/write permissions by default whenever Actions is enabled on a repository... [but not anymore](https://github.blog/changelog/2023-02-02-github-actions-updating-the-default-github_token-permissions-to-read-only/).
+>
+> So the recommended action is to go to the Actions permissions setting (Settings -> Actions -> General -> Workflow permissions) and check the `Read and write permissions` option.
 
-Previously, GitHub Actions would get a `GITHUB_TOKEN` with both read/write permissions by default whenever Actions is enabled on a repository... [but not anymore](https://github.blog/changelog/2023-02-02-github-actions-updating-the-default-github_token-permissions-to-read-only/).
-
-So the recommended action is to go to the Actions permissions setting (Settings -> Actions -> General -> Workflow permissions) and check the `Read and write permissions` option.
-
-### 7.2 Trigger the `publish` workflow
+Start by labeling the PR to trigger the [publish](https://github.com/mikybars/homebrew-tap/actions/workflows/publish.yml) workflow:
 
 ```bash
-gh label create pr-pull
+gh label create --force pr-pull
 gh pr edit --add-label pr-pull
 ```
 
@@ -125,29 +118,31 @@ If everything went well then there should be four things to check:
 
 1. The PR is now closed (not merged)
 
-   ```bash
-   gh pr view
-   ```
+```bash
+gh pr view
+```
 
 2. The commits in your PR are now back in `main`
 
-   ```bash
-   git switch main
-   git pull
-   git log
-   ```
+```bash
+git switch main
+git pull
+git log
+```
 
 3. A new release was created including the built bottles as assets
 
-   ```bash
-   gh release view
-   ```
+```bash
+gh release view
+```
 
 4. A new commit was pushed to `main` updating the formula
 
 ```bash
 git show
 ```
+
+There should be a `bottle` declaration in the diff:
 
 ```ruby
 bottle do
@@ -157,9 +152,11 @@ bottle do
 end
 ```
 
-## 8. Build bottles for your own architecture (bonus 🌟)
+## Troubleshooting
 
-This last step is just for when your architecture is fairly new (Apple Silicon M1/arm64) and there is no supporting runner available in GitHub yet for building bottles for it 👀 github/roadmap#528
+> My architecture is not yet supported by any of the [GitHub Actions runners available](https://github.com/actions/runner-images/tree/main?tab=readme-ov-file#available-images) and so no bottles are built that I can use.
+
+It turns out that bottles can also be built locally:
 
 ```bash
 brew install --build-bottle hadolint-wrapper
@@ -176,21 +173,25 @@ bottle do
 end
 ```
 
+Upload the tarball generated to the last release and don't forget to include the modified `bottle` block in your formula:
+
+> [!WARNING]
+> Remember to rename the file to remove the duplicate dash '-'
+> ```bash
+> mv hadolint-wrapper{--,-}1.2.1.arm64_ventura.bottle.tar.gz
+> ```
+
 ```bash
-# !! rememeber to rename the file to remove the duplicate dash '-'
-mv hadolint-wrapper{--,-}1.2.1.arm64_ventura.bottle.tar.gz
-gh release view --json tagName --template '{{.tagName}}'
-# --> hadolint-wrapper-1.2.1
-gh release upload \
-  hadolint-wrapper-1.2.1 \
-  hadolint-wrapper-1.2.1.arm64_ventura.bottle.tar.gz
+bottle=$(ls *.bottle.tar.gz)
+releaseName=$(gh release view --json tagName --template '{{.tagName}}')
+gh release upload $releaseName $bottle
 
 # and then after adding the new bottle block...
-git commit --all -m "add hadolint-wrapper bottle for arm64_ventura"
+git commit --all -m "add hadolint-wrapper bottle for arm64_ventura [skip ci]"
 git push
 ```
 
-# Resources
+## Resources
 
 - <https://til.simonwillison.net/homebrew/packaging-python-cli-for-homebrew> 🩷
 - <https://docs.brew.sh/Python-for-Formula-Authors>
