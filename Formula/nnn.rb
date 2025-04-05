@@ -1,5 +1,5 @@
 class Nnn < Formula
-  desc "Tiny, lightning fast, feature-packed file manager"
+  desc "Tiny, lightning fast, feature-packed file manager (+Nerdfont support)"
   homepage "https://github.com/jarun/nnn"
   url "https://github.com/jarun/nnn/archive/refs/tags/v5.1.tar.gz"
   sha256 "9faaff1e3f5a2fd3ed570a83f6fb3baf0bfc6ebd6a9abac16203d057ac3fffe3"

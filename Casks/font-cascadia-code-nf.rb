@@ -5,7 +5,7 @@ cask "font-cascadia-code-nf" do
   # https://docs.brew.sh/Cask-Cookbook#when-url-and-homepage-domains-differ-add-verified
   url "https://github.com/ryanoasis/nerd-fonts/releases/download/v#{version}/CascadiaCode.zip",
       verified: "github.com/ryanoasis/nerd-fonts/releases/download/"
-  name "font-cascadia-code-nf"
+  name "Cascadia Code NF (nerd fonts official)"
   homepage "https://www.nerdfonts.com/"
 
   # https://docs.brew.sh/Brew-Livecheck

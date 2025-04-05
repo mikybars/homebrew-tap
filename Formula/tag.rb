@@ -1,6 +1,6 @@
 HOMEBREW_TAG_VERSION="v1.4.0".freeze
 class Tag < Formula
-  desc "Instantly jump to your ag or ripgrep matches"
+  desc "Instantly jump to your ag or ripgrep matches (+Apple Silicon support)"
   homepage "https://github.com/aykamko/tag"
   url "https://github.com/aykamko/tag/archive/refs/tags/v1.4.0.tar.gz"
   sha256 "d3a02466e600634cf0ffff9ad8c5f70eba97e44758edf35cc4efbda9cbfdff9a"
